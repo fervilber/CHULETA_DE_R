@@ -38,6 +38,12 @@ tmp <-read.csv(nombrefichero)
 # con datos completos en todas las columnas de la fila
  nobs<- nrow(na.omit(tmp))
 ```
+ojo porque lo anterior puede descartar filas con datos ya que si falta uno los borra. Para leer los datos y luego quitar los NA de una determinada columna usar esto mejor:
+```{r}
+data <- read.csv("data/outcome-of-care-measures.csv", stringsAsFactors=FALSE, na.strings="Not Available")
+data <- data[!is.na(data[nombre o numero de columna]), ]
+```
+
 # Bucles
 ## Bucle que recorra un vector
 ```{r}
