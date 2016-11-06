@@ -1,10 +1,32 @@
 # R_SORT_CODE
 learning R by doing.
 
+# Table of contents
+1. [Introduction](#introduction)
+2. [Some paragraph](#paragraph1)
+    1. [Sub paragraph](#subparagraph1)
+3. [Another paragraph](#paragraph2)
+4. [Leer los ficheros de un directorio ](#Leer_los_ficheros)
+
+5.[leer los datos exif de fotos] (#Leer_exif)
+
+## This is the introduction <a name="introduction"></a>
+Some introduction text, formatted in heading 2 style
+
+## Some paragraph <a name="paragraph1"></a>
+The first paragraph text
+
+### Sub paragraph <a name="subparagraph1"></a>
+This is a sub paragraph, formatted in heading 3 style
+
+## Another paragraph <a name="paragraph2"></a>
+The second paragraph text
+
+
 Sort code examples is a bunch of sort examplos of code that will be veru usefull for beginners.
 
 
-# Leer los ficheros de un directorio
+# Leer los ficheros de un directorio <a name="Leer_los_ficheros"></a>
 Como leer los nombres de los ficheros de un dir
 ```{r}
 setwd("C:/....") #establece el directorio de trabajo
@@ -14,7 +36,7 @@ files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros
 
 ```
 
-# leer los datos exif de fotos
+# leer los datos exif de fotos <a name="Leer_exif"></a>
 
 ```{r}
 #instalamos el paquete que lee los datos exif
