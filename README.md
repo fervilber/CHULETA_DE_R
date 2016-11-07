@@ -87,11 +87,16 @@ exifinfo <- exifr(files_full)
 Una forma rápida es descartar los casos no completos, es decir las filas que contengan algún NA. Ojo pues nos quita muchos casos con datos si falta en una de las columnas, por lo que no es conveniente si queremos hacer estadisticas de columnas concretas más tarde
 ```{r}
 #lee un fichero de datos
-tmp <-read.csv(nombrefichero)
+data <-read.csv(nombrefichero)
 
-#numero de filas totales que es igual al num de casos completos
-# con datos completos en todas las columnas de la fila
- nobs<- nrow(na.omit(tmp))
+#quitamos los NA de la columna 4
+    data1 <- data[!is.na(data[4]), ]
+
+#alternativamente si quiero solo casos completos:
+# las filas que tienen datos validos en todas las columnas 
+    data1<-na.omit(data)
+    # si quiero sabe cuantas observaciones tengo
+    nobs<- nrow(na.omit(data))
 ```
 Otra forma es leer todo, y luego en el proceso seleccionar las columnas concretas descartando NA. PAra ello usaremos, esto:
 Tambien mostramos como leer un fichero que contiene NA pero con otro formato. En este caso el fichero contiene datos como "Not Available" que al leer le decimos que equivale a NA, lo que nos facilita despues el tratamiento
