@@ -1,32 +1,64 @@
 # R_SORT_CODE
 learning R by doing.
 
-# Table of contents
+## Table of contents
 1. [Introduction](#introduction)
-2. [Some paragraph](#paragraph1)
-    1. [Sub paragraph](#subparagraph1)
-3. [Another paragraph](#paragraph2)
-4. [Leer los ficheros de un directorio ](#Leer_los_ficheros)
+2. [Lectura de ficheros](#lectura_de_ficheros)
+    1. [Leer ficheros csv](#l1)
+    2. [Leer datos exif](#Leer_exif)
+    3. [Leer sin NA](#Leer_sin_NA)
+3. [Data Frames](#df)
+    1. [Descartar NA](#df1)
+    2. [ordenar un DF](#df2)
+    3. [Leer sin NA](#Leer_sin_NA)
+4. [Leer los ficheros de un directorio ](#LECTURA_DE_FICHEROS)
 
 5.[leer los datos exif de fotos] (#Leer_exif)
 
-## This is the introduction <a name="introduction"></a>
-Some introduction text, formatted in heading 2 style
-
-## Some paragraph <a name="paragraph1"></a>
-The first paragraph text
-
-### Sub paragraph <a name="subparagraph1"></a>
-This is a sub paragraph, formatted in heading 3 style
-
-## Another paragraph <a name="paragraph2"></a>
-The second paragraph text
+## Introduction <a name="introduction"></a>
+Some pieces of code that help begginers to write their first programs in R.
+Some of the comments are in spanish.
 
 
-Sort code examples is a bunch of sort examplos of code that will be veru usefull for beginners.
+## Data Frames <a name="df"></a>
+Seleccionar correctamente o filtrar un data frame es una de las tareas mas necesarias de R.
+### Descartar NA <a name="df1"></a>
+para seleccionar los valores no NA podemos usar esto
+```{r}
+#data es un df
+#nombrecol es el nombre de la columna o num de columna
+#entonces filtro almacena los valores que no son NA
+    filtro <- data[ !is.na(data[nombrecol]), ]
+    colsinNA <- data[, nombrecol]
+    
+#si son valoresnumericos podemos saber el max min etc de este modo
+    rowNum <- which.min(colsinNA) ##return the nrow of the min value 
+    nombre <- data[rowNum, ]$name
+   
+   
+    rowNum <- which.max(colsinNA) ##return the nrow of the max value   
 
+```
+### ordenar un DF <a name="df2"></a>
+para ordenar según criterios columan 1 y columna 3 hacer esto:
 
-# Leer los ficheros de un directorio <a name="Leer_los_ficheros"></a>
+```{r}
+#data es un df
+# esto ordena el df con dos criterios, primero según los valores de la col 1 y despues caso de empate por col 3
+  data_ordenado <- data[order(data[1],data[3],decreasing = FALSE),]
+```
+## Seleccion de valores
+```{r}
+ ## selec char values per col
+    data <- data[data[outcome] != 'Not Available', ]
+```
+## convertir a numeric
+```{r}
+## Convierte a numeric la columna 3 del df
+    data[3] <- as.data.frame(sapply(data[3], as.numeric))
+```
+## LECTURA DE FICHEROS <a name="lectura_de_ficheros"></a>
+### Leer los ficheros de un directorio <a name="l1"></a>
 Como leer los nombres de los ficheros de un dir
 ```{r}
 setwd("C:/....") #establece el directorio de trabajo
@@ -35,8 +67,7 @@ setwd("C:/....") #establece el directorio de trabajo
 files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros en el dir
 
 ```
-
-# leer los datos exif de fotos <a name="Leer_exif"></a>
+### leer los datos exif de fotos <a name="Leer_exif"></a>
 
 ```{r}
 #instalamos el paquete que lee los datos exif
@@ -51,7 +82,9 @@ files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros
 exifinfo <- exifr(files_full)
 ```
 
-#leer fichero *.csv y descartar los NA
+###leer fichero *.csv y descartar los NA <a name="Leer_sin_NA"></a>
+
+Una forma rápida es descartar los casos no completos, es decir las filas que contengan algún NA. Ojo pues nos quita muchos casos con datos si falta en una de las columnas, por lo que no es conveniente si queremos hacer estadisticas de columnas concretas más tarde
 ```{r}
 #lee un fichero de datos
 tmp <-read.csv(nombrefichero)
@@ -60,16 +93,18 @@ tmp <-read.csv(nombrefichero)
 # con datos completos en todas las columnas de la fila
  nobs<- nrow(na.omit(tmp))
 ```
-ojo porque lo anterior puede descartar filas con datos ya que si falta uno los borra. Para leer los datos y luego quitar los NA de una determinada columna usar esto mejor:
+Otra forma es leer todo, y luego en el proceso seleccionar las columnas concretas descartando NA. PAra ello usaremos, esto:
+Tambien mostramos como leer un fichero que contiene NA pero con otro formato. En este caso el fichero contiene datos como "Not Available" que al leer le decimos que equivale a NA, lo que nos facilita despues el tratamiento
 ```{r}
 data <- read.csv("data/outcome-of-care-measures.csv", stringsAsFactors=FALSE, na.strings="Not Available")
-data <- data[!is.na(data[nombre o numero de columna]), ]
+# seleccionamos de la columna 3 los datos validos , no NA
+data1 <- data[!is.na(data[3]), ]
 ```
 
-# Bucles
-## Bucle que recorra un vector
-```{r}
+## Bucles <a name="bucles"></a>
+### Bucle que recorra un vector <a name="b1"></a>
 
+```{r}
 #creamos un vector
 x<-1:100
 #seq_along(x) crea una secuencia de 1 a el lenght(x)..
@@ -78,4 +113,29 @@ x<-1:100
     }
 ```
 
+## Logical expressions
+Muestra expresiones logicas que pueden ser muyy utiles.
+### Validar valores
+outcome=resultado en inglés
+Ejemplo de una funcion en la que se validan los valores de entrada
+```{r}
+best <- function(state, outcome) {
+    ## Error handling
+    ## Validate the outcome string. Valid values:
+    possibleoutcomes = c("heart attack", "heart failure", "pneumonia")
+    if( outcome %in% possibleoutcomes == FALSE ) stop("invalid outcome")
+    
+    ## Validate the state string
+    states <- data[, 2]
+    states <- unique(states) ##use unique to extract just one value without repeat
+    if( state %in% states == FALSE ) stop("invalid state")    
+    
+    ## Validate the num value 
+    ## &&=AND  num%%1
+    if( num != "best" && num != "worst" && num%%1 != 0 ) stop("invalid num")
+
+}
+
+
+```
 
