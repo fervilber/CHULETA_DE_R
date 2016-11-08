@@ -141,7 +141,6 @@ best <- function(state, outcome) {
 
 }
 
-
 ```
 ! indicates logical negation (NOT).
 
@@ -150,3 +149,21 @@ best <- function(state, outcome) {
 xor indicates elementwise exclusive OR.
 
 isTRUE(x) is an abbreviation of identical(TRUE, x), and so is true if and only if x is a length-one logical vector with no attributes (not even names).
+
+## FUNCIONES DE TEXTO
+### Dar la vuelta a un string
+```{r}
+#cortar los espacios del inicio y fin
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+
+#dar la vuelta a una palabra
+strReverse <- function(x){
+  sapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
+}
+
+#substituir caracteres de un texto
+descripcion<-"sajsasjj jlakjs lajs lajs \n asa"
+descripcion <- gsub("\n"," ",descripcion, fixed = TRUE);
+
+```
+
