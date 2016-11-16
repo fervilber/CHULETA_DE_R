@@ -88,7 +88,7 @@ files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros
 exifinfo <- exifr(files_full)
 ```
 
-###leer fichero *.csv y descartar los NA <a name="Leer_sin_NA"></a>
+### leer fichero *.csv y descartar los NA <a name="Leer_sin_NA"></a>
 
 Una forma rápida es descartar los casos no completos, es decir las filas que contengan algún NA. Ojo pues nos quita muchos casos con datos si falta en una de las columnas, por lo que no es conveniente si queremos hacer estadisticas de columnas concretas más tarde
 ```{r}
