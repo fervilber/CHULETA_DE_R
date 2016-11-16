@@ -1,3 +1,17 @@
+---
+title: "r_sort_code"
+author: "FerVil"
+date: "16 de noviembre de 2016"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE, eval=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # R_SORT_CODE
 learning R by doing.
 
