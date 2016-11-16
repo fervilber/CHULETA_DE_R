@@ -26,6 +26,12 @@ Seleccionar correctamente o filtrar un data frame es una de las tareas mas neces
 para seleccionar los valores no NA podemos usar esto
 ```{r}
 #data es un df
+is.na(data) # es true para todos los valores NA
+!is.na(data) # es true para todos los valores no NA
+
+# Por ejemplo convertir los ceros 0 a NA
+df[df == 0]<-NA
+
 #nombrecol es el nombre de la columna o num de columna
 #entonces filtro almacena los valores que no son NA
     filtro <- data[ !is.na(data[nombrecol]), ]
@@ -106,9 +112,6 @@ data <- read.csv("data/outcome-of-care-measures.csv", stringsAsFactors=FALSE, na
 data1 <- data[!is.na(data[3]), ]
 ```
 
-## Bucles <a name="bucles"></a>
-### Bucle que recorra un vector <a name="b1"></a>
-
 ```{r}
 #creamos un vector
 x<-1:100
@@ -116,6 +119,57 @@ x<-1:100
     for (i in seq_along(x)) {   
         x2 <- x[i]*2
     }
+```
+## WEB SCRAPING
+### Descargar una tabla de una pagina web  <a name="tabla_web"/>
+ descargar una tabla de una web
+```{r}
+#EJEMPLO 1
+# descargamos los datos de invertia del IBEX35
+library("XML", lib.loc="~/R/win-library/3.3")
+library(XML)
+
+#direccion url con al menos una tabla
+t_invertia ="http://www.invertia.com/mercados/bolsa/indices/ibex-35/acciones-ib011ibex35"
+
+# con "which" indicamos qué tabla de la web descargamos, en este caso la 2 que corresponde con los valores del IBEX
+t_invertia.table = readHTMLTable(t_invertia, header=T, which=2,trim = TRUE,stringsAsFactors=F)
+t_invertia.table
+names(t_invertia.table)
+nom<-c("TKR","último", "Dif","Dif. %", "Open","Max","Min", "Vol","Cap", "Rt/Div",  "BPA", "PER","Hora")
+names(t_invertia.table)<-nom
+#quitar los n.a y n.d de la tabla y poner como NA
+t_invertia.table[t_invertia.table == "n.d."]<-NA
+t_invertia.table[t_invertia.table == "n.a."]<-NA
+## Bucles <a name="bucles"></a>
+### Bucle que recorra un vector <a name="b1"></a>
+```
+### Descargar un fichero csv desde la web
+```{r}
+# Descargar de la web el fichero siguiente csv
+fileUrl<-"https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
+# lo guardamos en la carpeta local como p1.csv
+download.file(fileUrl, destfile="p1.csv")
+
+# leemos su contenido
+p1 <- read.table("p1.csv", sep="," , header= TRUE)
+# Leemos la variable VAL que continene el valor de las casas
+tmp<-p1$VAL
+tmp<-tmp[!is.na(tmp)] # seleccionamos los validos quitamos NA
+
+# leemos enel code book que un valor de 24 significa que el
+# valor  de la casa es de 1 millon o más.
+tmp<-tmp[tmp>=24]
+# La respuesta de cuantos hay de mas de un millon es 53
+pregunata1<- length(tmp)
+```{r}
+### Conectar con MySQL
+```{r}
+# open a connection to the database
+ucscDb<-dbConnect(MySQL(),user = "genome",host = "genome-mysql.cse.ucsc.edu")
+db = "hg19" #= select specific database
+result<- dbGetQuery(ucscDb,"show databases;")
+dbDisconnect(ucscDb)
 ```
 
 ## Logical expressions
