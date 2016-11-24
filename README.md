@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 8. [EXRPRESIONES LÓGICAS](#logexp)
 9. [FUNCIONES DE TEXTO](#text)
 10. [INSTALACION DE PAQUETES](#inst_paq)
+11. [SUBSETTING](#subset)
 
 
 ## INTRODUCCION <a name="INTRODUCCION"></a>
@@ -35,6 +36,25 @@ Some of the comments are in spanish.
 ## ENTORNO DE TRABAJO <a name="ENTORNO_DE_TRABAJO"></a>
 
 ```{r eval=FALSE}
+getwd() # nos dice el directorio de trabajo actual
+setwd("c:/R/PROYECTOS") #establece la ruta dada como directorio de trabajo
+
+ls() #lista los objetos actuales en memoria
+list.files() #lista los ficheros en el directorio actual
+dir() # lo mismo que list.files
+
+
+# CREAR UN DIRECTORIO
+dir.create("testdir") # crea un directorio en el wd actual con el nombre testdir
+
+file.exists("mytest.R") # si TRUE es el que fichero existe
+file.rename("mytest.R", "mytest2.R")# cambia el nombre de  a 2
+file.copy("mytest2.R", "mytest3.R")
+dir.create(file.path("testdir2","testdir3"),recursive = TRUE) # CREA dos directorios recursivamente
+
+# BORRAR DIRECTORIOS CUIDADIN!!
+unlink("testdir",recursive = TRUE) #BORRA LOS DIRECTORIOS
+
 # Borrar todas las varibles del entorno en R
 rm(list=ls())
 
@@ -296,10 +316,123 @@ strReverse <- function(x){
 descripcion<-"sajsasjj jlakjs lajs lajs \n asa"
 descripcion <- gsub("\n"," ",descripcion, fixed = TRUE)
 
+# Buscar un patron de texto
+#da como resultado el id del elemento del vector que lo contiene
+txt <- c("arm","foot","lefroo", "baFoobar")
+grep("foo", txt,ignore.case=TRUE)
+# txt[2] y txt[4] lo contienen, el resultado es un vector (2, 4)
+
+grep("[a-z]", letters)
+#obtiene un vector con las id de las letras de 1 a 26
 ```
+### Paquete stringr
+paquete con funciones de manejo de textos
+```{r eval=FALSE}
+library(stringr)
+
+#Quitar espacios delante y detras de un string
+str_trim(string) # si se especifica side=c("left")
+```
+
 ## INSTALACION DE PAQUETES <a name="inst_paq"></a>
+Para instalar un paquete hacemos:
+  install.packages("nombredelpaquete");
+### RTOOLS
+Para instalar RTOOL debemos bajar el fichero de la siguiente web:
+<http://cran.r-project.org/bin/windows/Rtools/>
+
+```{r eval=FALSE}
+# 1. comprobamos que no está
+find.package("devtools")
+
+# 2. si está lo cargamos así 
+library(devtools)
+find_rtools()
+```
 ### Instalar bioconductor
 ```{r eval=FALSE}
 source("https://bioconductor.org/biocLite.R")
 biocLite()
+
+#Paquetes disponibles 
+#a<-- available.packages()
+   head(rownames(a),3) ## muestra solo los nombres de las primeras lineas
+
+# Para saber los argumentos de una funcion:
+args(list.files) # da la lista de argumentos de una fucnion
+args(grep)
+
 ```
+
+
+## SUBSETTING <a name="subset"></a>
+
+Repaso las principales formas de crear subconjuntos dentro de un data frame o de un data table.
+
+```{r eval=FALSE}
+#########################################
+##  SUBDIVIDISION DE  VARIABLES
+##  CREACION DE SUBCONJUNTOS
+#########################################
+
+#Creamos un data frame
+set.seed(13435)
+x<- data.frame("var1"=sample(1:5,"var2"=sample(6:10),"var3"=sample(11:15))
+x<-x[sample(1:5),];x$var2[c(1,3)]=NA
+x
+
+# Seleccionar una columna por numero
+x[,1]
+# Seleccionar columna por name
+x[,"var1"]
+
+# Seleccionar parte de una fila y columna a la vez
+x[1:2,"var2"]
+
+# Seleccionar con operadores lógicos
+# selecciono los valores que cumplen esta condición en todas las columnas
+x[(x$var1<=3 & x$var3 >11),] # AND 
+
+x[(x$var1<=3 | x$var3>15),] # OR
+
+
+# Seleccionar con which
+x[which(x$var2>8),]
+x[(x$var2>8),]  # ver diferencia respecto a NA
+
+# subconjunto de una columna que ademas contenga ciertos valores
+x2<-x[x$var3 %in% c(4,56,23)] # crea nueva tabla con la columna var3
+                              # pero solo las filas que valen 4, 56 y 23
+
+#########################################
+##  ORDENAR VARIABLES
+#########################################
+
+# Ordenar una columna ascendiente por defecto
+sort(x$var1)
+
+# ordenar por orden decreciente
+sort(x$var1, decreasion=TRUE)
+
+# ordenar y poner los NA al final
+sort(x$var1, na.last=TRUE)
+
+# Ordenar toda el data frame según una columna
+x[order(x$var1),] # ordeno por la columna var1
+
+
+#Ordenar por varias variables
+x[order(x$var1,x$var3),] # ordeno por la columna var1
+
+#####################################
+# Añadir una columna nueva al data frame directamente
+x$var4<- rnorm(5)
+
+#Añadir columnas nuevas
+y<- cbind(x,rnorm(5)) # la añade en la ultima columna
+y<- cbind(rnorm(5),x) # añade una columna en la primera columna
+
+# Añade una fila nueva 
+y<-rbind(c(1,2,3,4,5,6),x)
+```
+
