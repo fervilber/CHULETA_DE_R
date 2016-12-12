@@ -104,6 +104,18 @@ para ordenar según criterios columan 1 y columna 3 hacer esto:
 ## Convierte a numeric la columna 3 del df
     data[3] <- as.data.frame(sapply(data[3], as.numeric))
 ```
+### Quitar las columnas que son todo ceros o NA
+
+```{r eval=FALSE}
+# Quita las columnas que son todo NA
+DT[,which(unlist(lapply(DT, function(x)!all(is.na(x))))),with=F]
+
+#Estas otras opciones para quitar los ceros
+df[,colSums(is.na(df))< nrow(df)])
+select(df,df[,colSums(is.na(df))< nrow(df)])
+df<-df[,colSums(df != 0) != 0]
+```
+
 ## DATA TABLES <a name="dt"></a>
 ### comandos de Data Table
 ```{r eval=FALSE}
