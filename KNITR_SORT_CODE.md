@@ -80,7 +80,8 @@ Para ello y dentro del cógigo R podemos poner lo siguiente tras el preambulo
   a4height<- 11.7
 ```
 De esta forma para insertar una gráfica podemos definir su ancho y alto en % respecto al total de la paguna:
-```{r fig.width = 0.4*a4width, fig.height = 0.2*a4height}
+```{}
+{r fig.width = 0.4*a4width, fig.height = 0.2*a4height}
 plot(1:34)
 ```
 
