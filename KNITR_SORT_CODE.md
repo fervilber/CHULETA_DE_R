@@ -2,7 +2,7 @@
 
 ## INDICE
 1. [INTRODUCCION](#INTRODUCCION)
-2. [ENTORNO DE TRABAJO](#ENTORNO_DE_TRABAJO)
+2. [INSERTAR IMAGENES](#INSERT_IMAG)
 3. [DATA FRAMES](#df)
 
 ## INTRODUCCION <a name="INTRODUCCION"></a>
@@ -84,4 +84,69 @@ De esta forma para insertar una gráfica podemos definir su ancho y alto en % re
 {r fig.width = 0.4*a4width, fig.height = 0.2*a4height}
 plot(1:34)
 ```
+## INSERTAR IMAGENES <a name="INSERT_IMAG"></a>
+
+Métodos de insertar imagenes en markdown y KnitR
+### Con markdown directamente
+```{}
+![Foto del puente \label{Foto 1}](foto1.jpg)
+```
+![Foto del puente \label{Foto 1}](foto1.jpg)
+
+### Con markdown y algo de LateX
+En esta caso añadimos una label o etiqueta a la que luego hacemos referencia poneinedo \ref{Foto 2}
+```{}
+![Foto del puente \label{Foto 2}](foto1.jpg)
+```
+![Foto del puente \label{Foto 2}](foto1.jpg)
+
+### Con LateX solo
+
+Se añade esta liena tal cual o entre dobre dollar: $$
+```{}
+\includegraphics[width=0.43\linewidth]{imag/mapa.jpg}
+```
+tambien se puede insterta entre los simbolos de $$
+```{}
+$$
+\includegraphics[width=0.43\linewidth]{imag/mapa_ulea.jpg}
+\hspace{0.3cm}
+\includegraphics[width=0.43\linewidth]{imag/mapa_ulea.jpg}
+\break
+$$
+```
+### Con KnitR
+Donde a4width y a4height son parámetros globales que hemos definido al principio, con el ancho y largo de la hoja.
+```{}
+{r fig.width = 0.4*a4width, fig.height = 0.2*a4height}
+plot(1:34)
+```
+### Con código R
+
+Tambien podemos hacerlo con R directamente lo que nos permite programar.
+Aquí insetamos 6 imagenes copias de una misma:
+```{}
+{r fotomat,fig.cap='Varias fotos en una matriz',fig.width=6,fig.height = 0.5*a4height, out.width = '\\textwidth'}
+```
+```{r fotomat,fig.cap='Varias fotos en una matriz',fig.width=6,fig.height = 0.5*a4height, out.width = '\\textwidth'}
+library(jpeg)
+library(grid)
+
+setwd("C:/R/proyectos/imagenes")
+img <- readJPEG("foto1.jpg")
+
+pintaRaster<- function(img,i=4) {
+  par(mfrow=c(i/2, 2), mar=c(0, 0, 1, 0))
+# mar= vector con margenes(bottom, left, top, right)
+  for(j in 1:i*2){
+  plot.new()
+  plot.window(xlim=c(0, 1), ylim=c(0, 1), asp=1)
+  rasterImage(img, 0, 0, 1, 1)
+  title(paste0(letters[j], '. Image ', j), font.main=1)
+}
+}
+
+pintaRaster(img,6)
+```
+
 
