@@ -200,6 +200,30 @@ x<-1:100
         x2 <- x[i]*2
     }
 ```
+### Limpiar espacios en nombres de ficheros
+El objeto es quitar los espacios y caracteres raros en los nombres de ficheros de un directorio.
+En el ejemplo solo seleccionamos los ficheros de extension *.jpg
+```{r eval=FALSE}
+getwd()
+setwd("C:/R/proyectos/SCADA/ulea")
+#Cambiar espacio por _ en los nombres de ficheros de un directorio
+imagenes<-list.files("./imag/",pattern = ".jpg")
+imagenes # variable con los nombres de todos los ficheros del dir seleccionado
+
+#Funcion que cambia espacios y simbolos por "_"
+limpia<- function (x) gsub('([[:punct:]])|\\s+','_',x);
+
+#nos vamos al dir de trabajo
+setwd("C:/R/proyectos/SCADA/ulea/imag")
+#Hacemos un loop a todos los ficheros y renombramos
+for (i in seq_along(imagenes)){
+    a<-limpia(substring(imagenes[i],1,nchar(imagenes[i])-4))
+    a<- paste(a,".jpg", sep = "")
+    file.rename(imagenes[i],a)# cambia el nombre de  a 2
+}
+```
+
+
 ## WEB SCRAPING <a name="wscraping"></a>
 ### Descargar una tabla de una pagina web  <a name="tabla_web"/>
  descargar una tabla de una web
