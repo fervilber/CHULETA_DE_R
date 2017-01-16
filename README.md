@@ -223,6 +223,50 @@ for (i in seq_along(imagenes)){
 }
 ```
 
+### ESCRIBIR EN UN FICHERO
+ escribe un fichero desde R
+```{r}
+################################################################
+## crea código LATEX para insertar las imagenes de un directorio
+################################################################
+
+setwd("C:/R/proyectos/SCADA/ulea")
+imagenes<-list.files("./imag/" )
+#imagenes
+length(imagenes)
+## writeLines(line,"figurasLatex.tex", sep = "\n", useBytes = FALSE)
+limpia<- function (x) gsub('([[:punct:]])|\\s+','_',x);
+
+
+
+#Escribir en fichero con CAT
+fecha<-Sys.Date()
+sink("figurasLatex.tex") #abro la conexion con el fichero
+cat("% NUEVO ANEXO FOTOGRAFICO")
+cat("\n")
+cat(paste("% fer -",fecha,sep=""))
+cat("\n") #salto de linea
+## Empieza la figura
+line<-"\\begin{figure}[h] \\centering"
+cat(line)
+cat("\n")
+# hago un loop para todas las subfiguras
+for (i in seq_along(imagenes)){
+    line<-""
+    line<-paste(line,"\\subfigure[",imagenes[i],"]{\\includegraphics[width=0.45\\linewidth]{imag/", imagenes[i],"}}", sep="")
+    #write(line,file="figurasLatex.tex",append=TRUE)
+    cat(line)
+    cat("\n")
+    if(i%%2==0){
+        cat("\\\\")
+        cat("\n")
+    }
+}
+
+cat("\\caption{figuras}\\label{fig.fig1}")
+cat("\\end{figure}")
+sink()# cierro la conexion
+```
 
 ## WEB SCRAPING <a name="wscraping"></a>
 ### Descargar una tabla de una pagina web  <a name="tabla_web"/>
