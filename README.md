@@ -205,40 +205,75 @@ El objeto es quitar los espacios y caracteres raros en los nombres de ficheros d
 En el ejemplo solo seleccionamos los ficheros de extension *.jpg
 ```{r eval=FALSE}
 getwd()
-setwd("C:/R/proyectos/SCADA/ulea")
+ruta<-"C:/R/proyectos/INFORMES/OJOS"
+setwd(ruta)
 #Cambiar espacio por _ en los nombres de ficheros de un directorio
 imagenes<-list.files("./imag/",pattern = ".jpg")
-imagenes # variable con los nombres de todos los ficheros del dir seleccionado
+imagenes
+length(imagenes)
+limpia<- function (x) gsub('([[:punct:]])|\\s+','_',x); # quita los simbolos raros
+limpian<- function (x) gsub('ñ','n',x); # quita las ñ por n
 
-#Funcion que cambia espacios y simbolos por "_"
-limpia<- function (x) gsub('([[:punct:]])|\\s+','_',x);
+setwd("C:/R/proyectos/INFORMES/OJOS/imag")
+## Código para cambiar el nombre de los ficheros de un directorio
+## eliminando espacios en blanco
 
-#nos vamos al dir de trabajo
-setwd("C:/R/proyectos/SCADA/ulea/imag")
-#Hacemos un loop a todos los ficheros y renombramos
 for (i in seq_along(imagenes)){
     a<-limpia(substring(imagenes[i],1,nchar(imagenes[i])-4))
+    a<-limpian(a)
     a<- paste(a,".jpg", sep = "")
     file.rename(imagenes[i],a)# cambia el nombre de  a 2
 }
 ```
 
-### ESCRIBIR EN UN FICHERO
- escribe un fichero desde R
+### ESCRIBIR EN UN FICHERO de MARKDOWN CON FIGURAS
+ Escribe en un fichero desde R.
+ Este programa lee los nombres de los ficheros de imagen de un directorio, y escribe en otro fichero el código markdown para insertar dichas imagenes en un informe.
+
 ```{r}
 ################################################################
 ## crea código LATEX para insertar las imagenes de un directorio
 ################################################################
 
-setwd("C:/R/proyectos/SCADA/ulea")
+ruta<-"C:/R/proyectos/INFORMES/OJOS"
+setwd(ruta)
+getwd()
+imagenes<-list.files("./imag/",pattern = ".jpg")
+
+sink("imagenes.rmd") #abro la conexion con el fichero
+cat("# cod para insertar las imagenes de un directoio en markdown")
+cat("\n") #salto de linea
+## Empieza la figura
+
+# hago un loop para todas las subfiguras
+for (i in seq_along(imagenes)){
+    #i<-1
+    nom<- substring(imagenes[i],1,nchar(imagenes[i])-4)
+    nom
+    line<-paste("![", nom," \\label{fig_", i , "}](imag/", imagenes[i] ,")", sep="")
+    line
+    cat(line)
+    cat("\n")
+}
+
+sink()# cierro la conexion
+```
+## escribir fichero de cod latex
+Lo mismo pero en codigo Latex
+```{r}
+################################################################
+## crea código LATEX para insertar las imagenes de un directorio
+## en un informe R markdown.
+################################################################
+
+ruta<-"C:/R/proyectos/SCADA/ulea"
+setwd(ruta)
 imagenes<-list.files("./imag/" )
-#imagenes
 length(imagenes)
 ## writeLines(line,"figurasLatex.tex", sep = "\n", useBytes = FALSE)
+
 limpia<- function (x) gsub('([[:punct:]])|\\s+','_',x);
-
-
-
+limpian<- function (x) gsub('ñ','n',x); # cambia las ñ por n en los nombres
 #Escribir en fichero con CAT
 fecha<-Sys.Date()
 sink("figurasLatex.tex") #abro la conexion con el fichero
