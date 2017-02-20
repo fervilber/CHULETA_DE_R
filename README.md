@@ -475,6 +475,16 @@ grep("foo", txt,ignore.case=TRUE)
 grep("[a-z]", letters)
 # obtiene un vector con las id de las letras de 1 a 26
 ```
+### split texto
+para separar en elementos de un vector una linea e texto con separadores
+```{r eval=FALSE}
+cnames<-"col1 | col2 | nombre tres| asa"
+cnames<-strsplit(cnames, "|", fixed = TRUE)
+# como algunos nombres tienen espacios lo arreglamos con la funcion make.names
+# que cambia espacios por puntos
+cnames<- make.names(cnames[[1]])
+
+```
 ### Paquete stringr
 paquete con funciones de manejo de textos
 ```{r eval=FALSE}
