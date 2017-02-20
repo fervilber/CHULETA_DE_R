@@ -136,12 +136,30 @@ summary(subset1[[1]])
 #Guardar datos como un fichero
 DT<-write.table(big_df, file=file, row.names=FALSE, col.names=TRUE, sep="\t", quote=FALSE)
 system.time(fread(file))
-
-
-
 ```
+### Espacio que ocuparía una matriz
+Para saber el espacio de memoria que ocupará una matriz podemos usar esta función.
 
+```{r estima_mem}
+# Función que estima la cantidad de memoria usada por una matriz de filas x col
+# según sea integer o numeric
 
+predict_data_size <- function(numeric_size, number_type = "numeric") {
+  if(number_type == "integer") {
+    byte_per_number = 4 # 4 bytes por numero entero
+  } else if(number_type == "numeric") {
+    byte_per_number = 8  # 8 bytes por numero
+  } else {
+    stop(sprintf("Unknown number_type: %s", number_type))
+  }
+  estimate_size_in_bytes = (numeric_size * byte_per_number)
+  class(estimate_size_in_bytes) = "object_size"
+  print(estimate_size_in_bytes, units = "auto")
+}
+# Ejemplos
+predict_data_size(1304287*28, "numeric")
+predict_data_size(1518*1518, "integer")
+```
 
 ## LECTURA DE FICHEROS <a name="lectura_de_ficheros"></a>
 ### Leer los ficheros de un directorio <a name="l1"></a>
@@ -151,8 +169,25 @@ setwd("C:/....") #establece el directorio de trabajo
 #almacena en files_full la ruta relativa de cada fichero, 
 # si solo queremos el nombre poner full.names=FALSE
 files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros en el dir
-
 ```
+### Leer un txt
+Leer un fichero txtx de texto y asignar los nombres de las columnas según la primera fila
+El fichero de muestra contiene comentarios en las filas que empiezan con # y los datos están separados por | .
+
+```{r eval=FALSE}
+pm1<- read.table("nombre_fichero.txt", comment.char = "#", header = FALSE, sep = "|", na.strings = "")
+# vemos la dimension del fichero
+dim(pm0)
+head(pm0)
+# vamos a asignar los nombres de las columnas, que vemos que estaban en la primera fila del fichero
+cnames<- readLines("nombre_fichero.txt",1) # lee la fila 1
+# vemos que los nombres están separados por |, hacemos un 
+# split de los datos
+cnames<-strsplit(cnames, "|", fixed = TRUE)
+# asignamos como nombres de col el primer elemento de la lista de cnames
+names(pm0)<-cnames[[1]]
+```
+
 ### leer los datos exif de fotos <a name="Leer_exif"></a>
 
 ```{r eval=FALSE}
@@ -438,7 +473,7 @@ grep("foo", txt,ignore.case=TRUE)
 # txt[2] y txt[4] lo contienen, el resultado es un vector (2, 4)
 
 grep("[a-z]", letters)
-#obtiene un vector con las id de las letras de 1 a 26
+# obtiene un vector con las id de las letras de 1 a 26
 ```
 ### Paquete stringr
 paquete con funciones de manejo de textos
