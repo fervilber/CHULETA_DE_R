@@ -594,5 +594,38 @@ y<- cbind(rnorm(5),x) # añade una columna en la primera columna
 
 # Añade una fila nueva 
 y<-rbind(c(1,2,3,4,5,6),x)
+
+#####################################
+# sumar elementos de un split doble
+# lista de listas
+# hacemos un doble split
+df_split<-split(BaltCity,list(BaltCity$year,BaltCity$type))
+
+# rutina para obtener la suma de un elemento de segundo nivel en una lista de listas.
+# cogemos la suma de cada elemento 1 de cada lista principal del split
+resum_df<- data.frame()
+
+for (i in seq(df_split)){
+    # cambia 1 por la columna de la sublista que queramos resumir
+    resum_df<-rbind(resum_df,sum(df_split[[i]][,1]));#,names(df_split)[i]); 
+}
+# añadimos el nombre
+resum_df<-cbind(resum_df,names(df_split))
+resum_df
+
+# crear tabla relacional split doble con xtabs
+# here are 3 ways of calculate the cros data table
+# 1. xtabs
+    xt<-xtabs(Emissions~year + type,BaltCity) # emision year y taype son columnas del data frame BaltCity
+    # to test the results take a look at some
+    # sum(BaltCity[BaltCity$year == 1999 & BaltCity$type == "POINT",1])
+# 2. aggregatee
+     xta<-aggregate(Emissions ~ year + type, BaltCity, sum)
+# 3. library(dplyr)
+     xta <- nei %>%
+        filter(fips == 24510) %>%
+        group_by(year, type) %>%
+        summarize(total.emissions = sum(Emissions))
+
 ```
 
