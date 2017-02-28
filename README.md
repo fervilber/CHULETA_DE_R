@@ -1,5 +1,5 @@
 ---
-title: "r_sort_code"
+title: "VILBER R CHEAT SHEET"
 author: "Fernando Villalba"
 date: "16 de noviembre de 2016"
 output:
@@ -14,7 +14,7 @@ output:
 ```{r setup, include=FALSE, eval=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Table of contents
+## INDICE
 1. [INTRODUCCION](#INTRODUCCION)
 2. [ENTORNO DE TRABAJO](#ENTORNO_DE_TRABAJO)
 3. [DATA FRAMES](#df)
@@ -24,8 +24,9 @@ knitr::opts_chunk$set(echo = TRUE)
 7. [CONSULTA BASES DE DATOS](#bd)
 8. [EXRPRESIONES LÓGICAS](#logexp)
 9. [FUNCIONES DE TEXTO](#text)
-10. [INSTALACION DE PAQUETES](#inst_paq)
-11. [SUBSETTING](#subset)
+10.[FUNCIONES DE FECHA](#fecha)
+11. [INSTALACION DE PAQUETES](#inst_paq)
+12. [SUBSETTING](#subset)
 
 
 ## INTRODUCCION <a name="INTRODUCCION"></a>
@@ -483,7 +484,20 @@ cnames<-strsplit(cnames, "|", fixed = TRUE)
 # como algunos nombres tienen espacios lo arreglamos con la funcion make.names
 # que cambia espacios por puntos
 cnames<- make.names(cnames[[1]])
+```
+## FUNCIONES DE FECHA <a name="fecha"></a>
+### convertir datos de fecha y hora en POSIXlt
+Muchas veces al leer un fichero nos dan los datos de fecha y hora separados en columnas, una manera de transformarlos en formato POSIXlt es la siguiente:
+Lod datos originales del fichero son:
+|Date|Time|
+|---|---|
+|16/12/2006|17:24:00|
+|16/12/2006|17:25:00|
+|16/12/2006|17:26:00|
 
+```{r}
+# crear una nueva variable class POSIXlt
+data$DateTime <- strptime(paste(data$Date, data$Time, sep=" "), "%d/%m/%Y %H:%M:%S")
 ```
 ### Paquete stringr
 paquete con funciones de manejo de textos
