@@ -163,18 +163,17 @@ predict_data_size(1518*1518, "integer")
 ```
 
 ## LECTURA DE FICHEROS <a name="lectura_de_ficheros"></a>
-### Leer los ficheros de un directorio <a name="l1"></a>
-Como leer los nombres de los ficheros de un dir
+El comando básico para leer un fichero es el siguiente:
 ```{r eval=FALSE}
-setwd("C:/....") #establece el directorio de trabajo
-#almacena en files_full la ruta relativa de cada fichero, 
-# si solo queremos el nombre poner full.names=FALSE
-files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros en el dir
+datos_leidos <- read.table("nombre_fichero.txt", 
+                skip = numero_de_fila_desde_donde_empieza_a_leer,
+                nrows = num_filas_que leer,
+                sep = ";", na.strings = "?",
+                col.names= vector_nombres_de_col )
 ```
 ### Leer un txt
 Leer un fichero txtx de texto y asignar los nombres de las columnas según la primera fila
 El fichero de muestra contiene comentarios en las filas que empiezan con # y los datos están separados por | .
-
 ```{r eval=FALSE}
 pm1<- read.table("nombre_fichero.txt", comment.char = "#", header = FALSE, sep = "|", na.strings = "")
 # vemos la dimension del fichero
@@ -187,6 +186,15 @@ cnames<- readLines("nombre_fichero.txt",1) # lee la fila 1
 cnames<-strsplit(cnames, "|", fixed = TRUE)
 # asignamos como nombres de col el primer elemento de la lista de cnames
 names(pm0)<-cnames[[1]]
+```
+
+### Leer los nombres de los ficheros de un directorio <a name="l1"></a>
+Como leer los nombres de los ficheros de un directorio:
+```{r eval=FALSE}
+setwd("C:/....") #establece el directorio de trabajo
+#almacena en files_full la ruta relativa de cada fichero, 
+# si solo queremos el nombre poner full.names=FALSE
+files_full<-list.files(pattern = '.jpg',full.names=TRUE) #lee todos los ficheros en el dir
 ```
 
 ### leer los datos exif de fotos <a name="Leer_exif"></a>
