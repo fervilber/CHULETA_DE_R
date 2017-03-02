@@ -24,10 +24,10 @@ knitr::opts_chunk$set(echo = TRUE)
 7. [CONSULTA BASES DE DATOS](#bd)
 8. [EXRPRESIONES LÓGICAS](#logexp)
 9. [FUNCIONES DE TEXTO](#text)
-10.[FUNCIONES DE FECHA](#fecha)
+ 10.[FUNCIONES DE FECHA](#fecha)
 11. [INSTALACION DE PAQUETES](#inst_paq)
 12. [SUBSETTING](#subset)
-
+13. [GENERA SERIES ALEATORIAS](#seralea)
 
 ## INTRODUCCION <a name="INTRODUCCION"></a>
 Some pieces of code that help begginers to write their first programs in R.
@@ -650,4 +650,16 @@ resum_df
         summarize(total.emissions = sum(Emissions))
 
 ```
+## GENERA SERIES ALEATORIAS <a name="seralea"></a>
+En muchas ocasiones queremos generar numeros aleatorios y series para modeliza:
+La semilla reprodicible es con seed
 
+```{r}
+set.seed(10) # genera semilla aleatoria
+x <- rnorm(100) # genera 100 numeros normales entre 0-1
+
+# creamos un factor
+f <- rep(0:1,each=50) # repite 0 50 veces y 1 otras 50
+#para convertir en factor
+f<-factor(f,labels=c("Grupo 1", "Grupo 2"))
+```
