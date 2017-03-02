@@ -135,6 +135,7 @@ library(grid)
 setwd("C:/R/proyectos/imagenes")
 img <- readJPEG("foto1.jpg")
 
+# pinta una matriz con la imagen un numero de veces especificado
 pintaRaster<- function(img,i=4) {
   par(mfrow=c(i/2, 2), mar=c(0, 0, 1, 0))
 # mar= vector con margenes(bottom, left, top, right)
@@ -149,6 +150,26 @@ pintaRaster<- function(img,i=4) {
 pintaRaster(img,6)
 ```
 
+### Con código R 2
+Esta es una funcion para insertar un png desde código R:
+```{r}
+library(grid)
+library("png")
+# leemos la imagen
+img <- readPNG("myfile.png")
+
+# definimos la funcion para pintar un png
+pintaRaster<- function(img) {
+  par(mar=c(0,0,0,0))
+  plot.new()
+  plot.window(xlim=c(0, 1), ylim=c(0, 1), asp=1)
+  rasterImage(img, 0, 0, 1, 1)
+}
+
+# llamamos ala funcion
+pintaRaster(img)
+dev.off()
+```
 
 # CREAR ENTRADAS DESDE CODIGO
  escribe un fichero desde R
