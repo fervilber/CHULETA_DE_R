@@ -663,3 +663,17 @@ f <- rep(0:1,each=50) # repite 0 50 veces y 1 otras 50
 #para convertir en factor
 f<-factor(f,labels=c("Grupo 1", "Grupo 2"))
 ```
+### FACTORES
+Dividir una variable numerica en 3 partes como factores o categorias
+```{r}
+# dividir en 3 partes iguales una variable numerica diamonds$carat
+# calculamos los puntos de corte 3+1=4
+cutpoints<-quantile(diamonds$carat,seq(0,1,length=4),na.rm=TRUE)
+
+#creamos la nueva variable en la dataframe diamons
+# cut(variable_a_cortar, puntos_de_corte)
+diamonds$car2<-cut(diamonds$carat,cutpoints)
+#ojo que los valores iguales al min los excluye en otra categoría
+levels(diamonds$car2).
+
+```
