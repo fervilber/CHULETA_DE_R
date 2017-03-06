@@ -519,6 +519,14 @@ str_trim(string) # si se especifica side=c("left")
 ## INSTALACION DE PAQUETES <a name="inst_paq"></a>
 Para instalar un paquete hacemos:
   install.packages("nombredelpaquete");
+Si no sabemos si está instalado, lo mejor es usar la siguiente funcion con el paquete que queramos, en este caso "png":
+De este modo nos instalará incluso las dependencias al mismo.
+```{r}  
+if (!require("png")) {
+   install.packages("png", dependencies = TRUE)
+   library(png)
+   } 
+ ```
 ### RTOOLS
 Para instalar RTOOL debemos bajar el fichero de la siguiente web:
 <http://cran.r-project.org/bin/windows/Rtools/>
