@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 7. [CONSULTA BASES DE DATOS](#bd)
 8. [EXRPRESIONES LÓGICAS](#logexp)
 9. [FUNCIONES DE TEXTO](#text)
- 10.[FUNCIONES DE FECHA](#fecha)
+10.[FUNCIONES DE FECHA](#fecha)
 11. [INSTALACION DE PAQUETES](#inst_paq)
 12. [SUBSETTING](#subset)
 13. [GENERA SERIES ALEATORIAS](#seralea)
@@ -671,6 +671,17 @@ f <- rep(0:1,each=50) # repite 0 50 veces y 1 otras 50
 #para convertir en factor
 f<-factor(f,labels=c("Grupo 1", "Grupo 2"))
 ```
+### MONEDA AL AIRE
+para simular el lanzamiento de una moneda usaremos la binomial.
+
+```{r}
+set.seed(1)
+n<-1000 # numero de lanzamientos de moneda o tirada
+# size es el numero de monedas que lanzamos en la misma tirada, y lo que da es la suma de los resultados. p ejm size 5 =3 caras + 2 cruces...
+lanzamientos=rbinom(n,size=1,prob = 0.5)
+table(lanzamientos)
+```
+
 ### FACTORES
 Dividir una variable numerica en 3 partes como factores o categorias
 ```{r}
