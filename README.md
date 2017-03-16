@@ -348,6 +348,38 @@ sink()# cierro la conexion
 ```
 
 ## WEB SCRAPING <a name="wscraping"></a>
+### Descargar y descomprimir un zip de la web
+# Download data files
+```{r eval=FALSE}
+library(httr) 
+url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+file <- "datos.zip"
+if(!file.exists(file)){
+    print("descargando")
+    download.file(url, file, method = "wininet")
+}
+
+# Unzip and create folders 
+datafolder <- "UCI_HAR_Dataset"
+resultsfolder <- "results"
+if(!file.exists(datafolder)){
+    print("unzip file")
+    unzip(file, list = FALSE, overwrite = TRUE)
+} 
+
+if(!file.exists(resultsfolder)){
+    print("create results folder")
+    dir.create(resultsfolder)
+} 
+
+# 0) Read txt and convert to data.frame in folder UCI HAR Dataset
+
+setwd("C:/R/proyectos/C3_course_project/UCI HAR Dataset/")
+
+# Read general data
+features     = read.table('features.txt',header=FALSE); #imports features.txt
+activityType = read.table('activity_labels.txt',header=FALSE); #imports activity_labels.txt
+```
 ### Descargar una tabla de una pagina web  <a name="tabla_web"/>
  descargar una tabla de una web
 ```{r eval=FALSE}
