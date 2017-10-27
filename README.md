@@ -702,6 +702,19 @@ x <- rnorm(100) # genera 100 numeros normales entre 0-1
 f <- rep(0:1,each=50) # repite 0 50 veces y 1 otras 50
 #para convertir en factor
 f<-factor(f,labels=c("Grupo 1", "Grupo 2"))
+
+#crear variable aleatoria de yes y nos
+yesno<- sample(c("yes", "no"), size=10, replace=TRUE)
+#crear factor
+yesnofac<-factor(yesno, levels=c("yes", "no"))
+as.numeric((yesnofac))
+#yes=1, no 2...
+
+# si lo quiero cambiar el orden de los factores
+yesnofac<-relevel(yesnofac, ref="no")
+as.numeric((yesnofac))
+ 
+
 ```
 ### MONEDA AL AIRE
 para simular el lanzamiento de una moneda usaremos la binomial.
