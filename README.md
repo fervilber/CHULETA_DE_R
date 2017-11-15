@@ -657,6 +657,17 @@ y<- cbind(rnorm(5),x) # añade una columna en la primera columna
 # Añade una fila nueva 
 y<-rbind(c(1,2,3,4,5,6),x)
 
+###########################
+# SUBTOTALES CON TAPPLY
+#########################
+  # por ejemplo si queremos la suma de la colA, según cada valor de la colB de un data frame
+  tapply(df$colA,df$colB,sum)
+  #probar dcast(df, df$colA ~ df$colB, sum)
+  #Otra opcion es con split
+  res<- lapply(split(df$colA,df$colB),sum)
+  unlist(res)
+  sapply(res, sum)
+
 #####################################
 # sumar elementos de un split doble
 # lista de listas
