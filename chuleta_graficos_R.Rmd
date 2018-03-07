@@ -116,7 +116,28 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
     dev.off()
 
 ```
+### Ejemplo de histograma
 
+![histograma ]('imag/hist_1.png')
+
+```{r}
+   png('hist_1.png',width = 600, height = 460, units = "px")
+    # Histograma de producciones mensuales
+    #par(family="Arial Narrow")
+    hist(dtVal$produccion, col="skyblue",border = FALSE,
+         main = "Frecuencia deproduccion",
+         xlab="Hm3/mes", ylab="Frecuencia")
+    # añadimos la media mensual de produccion
+    abline(v=mean(dtVal$produccion),lty=3, lwd=2)
+    rug(dtVal$produccion)
+    dev.off()
+    png('boxplot1.png',width = 600, height = 460, units = "px")
+    # grafica de boxplot de produccion mensual
+    micolor=rainbow(12,v=0.5,alpha = 0.5)
+    boxplot(produccion ~ mes,dtVal,main="Produccion mensual",
+        xlab="Mes", ylab=expression('Producción en Hm'^3), col=micolor)
+    dev.off()
+```
 
 ## Histograma con ggplot2
 
@@ -148,7 +169,13 @@ Para los graficos de cajas es necesario si queremos hacr categorías convertir l
     boxplot(Ozone ~ Month, airquality, xlab="mes", ylab="ozono ppb",
             col=c("slategray","sienna","seagreen","tomato2","royalblue3"))
 ```
-
+## Ejemplo de boxplot
+![Boxplot]('imag/boxplot1.png')
+```{r }
+    micolor=rainbow(12,v=0.5,alpha = 0.5)
+    boxplot(produccion ~ mes,dtVal,main="Produccion mensual",
+        xlab="Mes", ylab=expression('Producción en Hm'^3), col=micolor)
+```
 
 # DISPERSIÓN x-y
 
@@ -259,15 +286,52 @@ ggplot(datos,aes(var_x,var_y, color=var_color))+
     grid.raster(readPNG("imag/facets.png"))
 ```
 
+# ggplot  y qplot
+![qplot barras apliadas]('imag/qplot1.png')
+```{r }
+ qplot(factor(mes),data=dtVal,fill=factor(year),
+       geom="bar", weight=produccion,
+       main="Producción mensual por año y por mes",
+       xlab= "mes", ylab =expression('Hm'^3)
+       )
+```
+![qplot barras apliadas]('imag/ggplot3.png')
+```{r }
+    # creamos una nueva tabla solo con 3 columnass de datos
+    aaa<-dtVal[,c("year","mes","produccion")]
+    aaa$year<-factor(aaa$year)
 
+    #aaa<-aaa[order(aaa$mes,aaa$year),]
+    # Gráfica de áreas acumuladas 
+    # necesitamos convertir en factor los años
+  
+    # pintamos la grafica
+    ggplot(aaa, aes(x=mes, y=produccion,fill=year))+
+        geom_area(colour="black", size=0.2, alpha=.8)+
+        labs(fill='Año')+
+        labs(title='Producción Valdelentisco')+
+        labs(x = "mes", y = expression('Producción en Hm'^3)) +
+        scale_x_discrete(name ="mes",limits=c(1:12),
+                         labels=c("e","f","m","a","m","j","j","a","s","o","n","d"))
 
+    ggsave("ggplot3.png", width = 16, height = 9, dpi = 100)
+```
+otro ejemplo con ggplot
+![ggplot varias graficas]('imag/ggplot2.png')
+```{r}
+    # pintamos la grafica
+    ggplot(data = dtVal,aes(x = fecha))+
+        geom_line(aes(y = tam), color = "red", lwd=2)+
+        geom_area(aes(y = acumulado),colour="skyblue",fill="skyblue", size=0.2, alpha=.8) +
+        geom_line(aes(y = produccion*5), color = "blue", lwd=1) +
+       scale_y_continuous(sec.axis = sec_axis(~./5, name = "Produccion mensual Hm3"))+
+        labs(title='Producción Valdelentisco')+
+        labs(x = "mes", y = expression('Producción en Hm'^3)) +
+        geom_text(aes(y = acumulado, label=ifelse(mes==12, format(acumulado, digits=2), '')),color = "blue")
 
-# PALETA DE COLOR PERSONALIZADO
-Los colores con nombre  son los almacenados en el vector `colors()`, hay 627.
-Las paletas predefinidas están en grDevices color palette existen unas cuantas como:
-*cm.colors,topo.colors, terrain.colors, heat.colors,rainbow*.
-
-
+  ggsave('ggplot2.png', width = 16, height = 9, dpi = 100)
+```
+# paletas de colores
 ```{r fig.width=0.7*a4ancho,fig.height=0.20*a4alto}
 # generar 10 colores aleatorios de la muestra colors
     sample(colors(),10)
@@ -378,6 +442,7 @@ Partimos de una dataframe =dtVal, que contiene un campo llamado fecha con la fec
 
 ```
 # Ejemplo de varis gráficas en base system
+![Varias graficas de lineas en R Base System](imag/plotBS_1.png)
 ```{r}
     png('plotBS_1.png',width = 600, height = 460, units = "px")
     # grafica simple
@@ -390,7 +455,40 @@ Partimos de una dataframe =dtVal, que contiene un campo llamado fecha con la fec
     legend("topleft", pch =20, col=c("grey", "red","blue"),legend=c("acuamulado","produccion","TAM"))
     dev.off()
 ```
+
 # Ejemplo gráficas con dos ejes en base system
+![V2 ejes y en R Base System](imag/plotBS_2.png)
+```{r}
+    # Version 2
+    png('plotBS_2.png',width = 600, height = 460, units = "px")
+    par(mar=c(5, 4, 4, 5)+0.3)#,font.axis=11, font.lab=11, font.main=11)
+    plot(dtVal$dates,dtVal$acumulado, xlab="", ylab="",axes=FALSE,type="n",
+         col="black",main="Grafico de producción Valdelentisco") 
+         
+    axis(2, ylim=c(0,50),col="black",las=1)  ## las=1 hace las marcas horizontales del eje
+    #axis.Date(1, at=seq(min(dtVal$dates), max(dtVal$dates), by="12 mon"), format="%m-%Y")
+    # definimos el eje de fechas debe ser DATE no positxt
+    axis.Date(1, at=seq(min(dtVal$dates), max(dtVal$dates), by="1 year"),
+              format="%m-%Y",las=2,cex.axis = .7)
+
+    mtext("Hm3 volumen",side=2,line=2.5)
+    box()
+    # añadimos las lineas restantes
+    lines(dtVal$dates,dtVal$acumulado, type= "p", col="skyblue",pch=16)
+    lines(dtVal$dates,dtVal$tam, type= "l", col="blue", lwd=2)
+    legend("topleft", pch =20, col=c("skyblue", "red","blue"),legend=c("Acuamulado anual","Producción mes","TAM"))#,text.font=3)
+    # segundo eje
+    par(new=TRUE)
+    plot(dtVal$dates,dtVal$produccion, xlab="", ylab="", ylim=c(0,10),
+         axes=FALSE,type="h",col=rgb(1, 0, 0, .2), lwd=2) 
+    #lines(dtVal$fecha,dtVal$produccion, type= "l", col="red",lwd=2)
+    ## HAcemos el eje en la izquierda(line=4)
+    mtext("Producción mensual",side=4,col="red",line=4) 
+    axis(4, ylim=c(0,10), col="red",col.axis="red",las=1)
+    dev.off()
+```
+# Ejemplo de varis gráficas en base system
+![Varias graficas de lineas en R Base System](imag/plotBS_1.png)
 ```{r}
     png('plotBS_1.png',width = 600, height = 460, units = "px")
     # grafica simple
