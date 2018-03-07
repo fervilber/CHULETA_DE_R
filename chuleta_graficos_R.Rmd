@@ -118,7 +118,7 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
 ```
 ### Ejemplo de histograma
 
-![histograma ]('imag/hist_1.png')
+![histograma ](imag/hist_1.png)
 
 ```{r}
    png('hist_1.png',width = 600, height = 460, units = "px")
@@ -170,7 +170,7 @@ Para los graficos de cajas es necesario si queremos hacr categorías convertir l
             col=c("slategray","sienna","seagreen","tomato2","royalblue3"))
 ```
 ## Ejemplo de boxplot
-![Boxplot]('imag/boxplot1.png')
+![Boxplot](imag/boxplot1.png)
 ```{r }
     micolor=rainbow(12,v=0.5,alpha = 0.5)
     boxplot(produccion ~ mes,dtVal,main="Produccion mensual",
@@ -287,7 +287,7 @@ ggplot(datos,aes(var_x,var_y, color=var_color))+
 ```
 
 # ggplot  y qplot
-![qplot barras apliadas]('imag/qplot1.png')
+![qplot barras apliadas](imag/qplot1.png)
 ```{r }
  qplot(factor(mes),data=dtVal,fill=factor(year),
        geom="bar", weight=produccion,
@@ -295,7 +295,7 @@ ggplot(datos,aes(var_x,var_y, color=var_color))+
        xlab= "mes", ylab =expression('Hm'^3)
        )
 ```
-![qplot barras apliadas]('imag/ggplot3.png')
+![qplot barras apliadas](imag/ggplot3.png)
 ```{r }
     # creamos una nueva tabla solo con 3 columnass de datos
     aaa<-dtVal[,c("year","mes","produccion")]
@@ -317,7 +317,7 @@ ggplot(datos,aes(var_x,var_y, color=var_color))+
     ggsave("ggplot3.png", width = 16, height = 9, dpi = 100)
 ```
 otro ejemplo con ggplot
-![ggplot varias graficas]('imag/ggplot2.png')
+![ggplot varias graficas](imag/ggplot2.png)
 ```{r}
     # pintamos la grafica
     ggplot(data = dtVal,aes(x = fecha))+
