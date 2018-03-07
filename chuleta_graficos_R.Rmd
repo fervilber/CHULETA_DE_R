@@ -84,6 +84,7 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
 
 
 # HISTOGRAMAS
+ ![histograma](imag/histograma1.png)
  
 ```{r fig.cap='Histogramas base system',fig.width=0.7*a4ancho,fig.height=0.25*a4alto}
     # GRAFICAS DE HISTOGRAMAS
@@ -103,7 +104,7 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
     barplot(table(pollution$region), col="wheat", main="numero de condados por region")
 ```
 
-
+![dos graficos histograma juntos ](imag/dosgraficosjuntos.png)
 ```{r fig.cap='Histogramas',fig.width=0.7*a4ancho,fig.height=0.2*a4alto}
     set.seed(42)
     par(mfrow=c(1,2))                            # una fila con dos col de graficos
@@ -140,15 +141,20 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
 ```
 
 ## Histograma con ggplot2
-
+![histograma con ggplot y funcion de densidad ](imag/ggplot_densidad.png)
 ```{r fig.cap='Histogramas ggplot',fig.width=0.7*a4ancho,fig.height=0.25*a4alto}
     library(ggplot2)
     
-    ggplot(df, aes(y)) +
+    df<-data.frame(x=rnorm(500,4),y=rnorm(500,12))
+
+     ggplot(df, aes(y)) +
       geom_histogram(aes(fill=..count..)) +
       scale_fill_gradient("Count", low = "green", high = "red")+
-      geom_density(position = "stack") 
-    
+      geom_density(position = "stack")
+```
+
+![histograma con ggplot y funcion de densidad ](imag/ggplot_densidad2.png)
+```{r}
     # funcion de densidad
     ggplot(df, aes(x=y)) +
       geom_histogram(aes(y =..density.., fill=..count..)) +
@@ -158,13 +164,17 @@ Para muestra y ejemplos muchas veces necesitamos generar una serie de datos alea
 
 # BOX WHISPER
 Para los graficos de cajas es necesario si queremos hacr categorías convertir la variable de categoría a factor.
+![BOXPLOT 5](imag/boxplot5.png)
 ```{r fig.cap='Graficos de caja Box-Whisper',fig.width=0.7*a4ancho,fig.height=0.17*a4alto}
     par(mar=c(3,3,0,2))#mar=c(bottom, left, top, right)
-    boxplot(cars$speed, col="lightblue", horizontal = TRUE)
+    boxplot(cars$speed, col="lightblue", horizontal = TRUE, main="Boxplot 5")
     #si queremos añadir una linea al boxplot, por ejemplo para marcar el limite de 12
-    abline(v=median(cars$speed), col= "red", lwd=1)
-    
-    # Grafica de cajas boxplot
+    abline(v=median(cars$speed), col= "red", lwd=1,lty=2) 
+    abline(v=mean(cars$speed), col= "grey", lwd=1, lty=3) 
+```
+![BOXPLOT 6](imag/boxplot6.png)
+```{r}
+    # Grafica de cajas boxplot 6
     airquality<-transform(airquality,Month=factor(Month))
     boxplot(Ozone ~ Month, airquality, xlab="mes", ylab="ozono ppb",
             col=c("slategray","sienna","seagreen","tomato2","royalblue3"))
@@ -178,7 +188,8 @@ Para los graficos de cajas es necesario si queremos hacr categorías convertir l
 ```
 
 # DISPERSIÓN x-y
-
+withdispersion
+![withdispersion](imag/withdispersion.png)
 ```{r ,fig.cap='Graficos de dispersion',fig.width=0.7*a4ancho,fig.height=0.23*a4alto}
     library(datasets)
     # head(cars)
@@ -197,8 +208,10 @@ Para los graficos de cajas es necesario si queremos hacr categorías convertir l
     #--------otra -------
     with(pollution,plot(latitude,pm25, col=region ))
         abline(h=12,lwd=2,lty=2)
-    
-        
+```
+
+![withdispersion 2 ](imag/withdispersion2.png)
+```{}
     with(airquality,plot(Wind,Ozone,type = "n"))
         may <- subset(airquality, Month==5)
     #pintamos ese conjunto
@@ -228,15 +241,19 @@ Para los graficos de cajas es necesario si queremos hacr categorías convertir l
 
 
 ## GRÁFICOS DE LINEAS
+![lineas](imag/lineas3.png)
 ```{r,fig.cap='Graficos de lineas',fig.width=0.7*a4ancho,fig.height=0.3*a4alto}
     # Graficos de lineas
-    par(mar=c(3,3,0,2))#mar=c(bottom, left, top, right)
+    y<-rnorm(100,0,5)
+    x<-1:100
+    df<-data.frame(x,y)
+    par(mar=c(3,3,2,2))#mar=c(bottom, left, top, right)
     # cumsum es suma acumulada de la serie    
     plot(df$x, cumsum(df$y), ylab="eje y", xlab=" Eje X", type="n") # type n es que no lo pinta
     lines(df$x, cumsum(df$y), type= "l", col="grey")
-    lines(df$x, cumsum(df$y)+10, type= "l", col="red")
-    lines(df$x, cumsum(df$y)-20, type= "l", col="blue")
-    legend("topright", pch =20, col=c("grey", "red","blue"),legend=c("gris","rojo","azul"))
+    lines(df$x, cummax(df$y), type= "l", col="red")
+    lines(df$x, -cummin(df$y), type= "l", col="blue")
+    legend("topright", pch =20, col=c("grey", "red","blue"),legend=c("gris","rojo","azul"))  
 ```
 
 
