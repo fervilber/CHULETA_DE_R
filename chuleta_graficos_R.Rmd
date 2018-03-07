@@ -353,3 +353,53 @@ Para pintar un gráfico con dos escalas distintas:
         axis(side=4,xlab="eje 2", at = pretty(range(y)),col="red",col.axis = "red")
         # at puede omitirse y se calcula
 ```
+# Gráficos dinámicos con dygraphs
+la librería dygraphs permite graficos dinámicos en html muy buenos, aquí ponemos un ejemplo.
+Partimos de una dataframe =dtVal, que contiene un campo llamado fecha con la fecha POSIXct, y otro con valores llamado produccion
+```{r }
+   # Library
+    #install.packages("dygraphs")
+    library(dygraphs)
+    library(xts)          # To make the convertion data-frame / xts format
+    library(tidyverse)
+    library(lubridate)
+ 
+    #GRafica usando dygraph
+    stem=xts(x = dtVal$produccion, order.by = dtVal$fecha)
+    stem1<-cbind(stem,stem+4)
+    names(stem1)<-c("Valdelentisco", "Torrevieja")
+
+    dygraph(stem1, main = "Produccion mensual histórica Total Cuenca del Segura") %>% 
+        dyOptions(stackedGraph = TRUE) %>% 
+        dyRangeSelector(height = 30) %>%
+        dyOptions(colors = RColorBrewer::brewer.pal(3, "Set2"),fillGraph=TRUE,fillAlpha=0.1,labelsUTC = TRUE,drawGrid = TRUE)
+    #dyOptions(labelsUTC = TRUE, fillGraph=TRUE, fillAlpha=0.1, drawGrid = FALSE, colors="#D8AE5A") 
+    #    dyCrosshair(direction = "vertical") 
+
+```
+# Ejemplo de varis gráficas en base system
+```{r}
+    png('plotBS_1.png',width = 600, height = 460, units = "px")
+    # grafica simple
+    plot(dtVal$fecha,dtVal$acumulado, ylab=expression('Hm'^3), xlab="Fecha",type="n",
+         main="Grafico TAM") 
+    # añadimos las lineas restantes
+    lines(dtVal$fecha,dtVal$acumulado, type= "h", col="grey")
+    lines(dtVal$fecha,dtVal$produccion, type= "l", col="red",lwd=2)
+    lines(dtVal$fecha,dtVal$tam, type= "l", col="blue",lwd=2)
+    legend("topleft", pch =20, col=c("grey", "red","blue"),legend=c("acuamulado","produccion","TAM"))
+    dev.off()
+```
+# Ejemplo gráficas con dos ejes en base system
+```{r}
+    png('plotBS_1.png',width = 600, height = 460, units = "px")
+    # grafica simple
+    plot(dtVal$fecha,dtVal$acumulado, ylab=expression('Hm'^3), xlab="Fecha",type="n",
+         main="Grafico TAM") 
+    # añadimos las lineas restantes
+    lines(dtVal$fecha,dtVal$acumulado, type= "h", col="grey")
+    lines(dtVal$fecha,dtVal$produccion, type= "l", col="red",lwd=2)
+    lines(dtVal$fecha,dtVal$tam, type= "l", col="blue",lwd=2)
+    legend("topleft", pch =20, col=c("grey", "red","blue"),legend=c("acuamulado","produccion","TAM"))
+    dev.off()
+```
