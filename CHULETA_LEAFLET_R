@@ -1,0 +1,130 @@
+# Mapa parcelas 
+Se trata de un visor de mapa web interactivo que contiene:
+
+ - capa parcelas 
+ - Conducciones
+ - ![](zoom.png) Buscador de Tomas (Ejm: TR0101 - SCV08)
+ - ![](pcompleta.png) Botón pantalla completa 
+
+
+```{r map, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, tidy=TRUE}
+#author: "FER VILBER"
+#date: "14 de marzo de 2018"
+#library(shiny)
+#library(shinythemes)
+rm(list = ls())
+library(sp)
+library(leaflet)
+# OJO HAY QUE INSTALAR CON ESTO BIEN o no funciona
+#devtools::install_github('bhaskarvk/leaflet.extras')
+library(leaflet.extras)
+library(rgdal) # para leer shp
+
+# Leemos las capas del mapa que se encuentran en el directorio de trabajo
+    rutamap<-paste0(getwd(),"/capas") # ruta de las capas en la carpeta capas
+
+    tomas<- readOGR(dsn = rutamap,layer = 'Todas_tomas',verbose=FALSE) # verbose es para que no informe de lo que lee en el html final
+     tomas <- tomas[,1] # me quedo solo con la columna 1 del nombre
+    red<-readOGR(dsn = rutamap,layer = 'Red_Completa',verbose=FALSE)
+     red <- red[,1] # me quedo solo con la columna 1 del nombre
+    # la capa parcelas1 la he creado desde código parcelas.shp es su nombre
+    parcelas1<-readOGR(dsn = rutamap, layer = 'parcelas',verbose=FALSE)
+    library(rmapshaper) # para manejo de capas
+    parcelas1 <- rmapshaper::ms_simplify(parcelas1)  # quita puntos de poligons para ocupar menos  
+
+# quitamos algunos campos que no nos vales
+    quitacampos <- c("Zona","Municipio","Actuacion","Subactuaci","Provincia","Dotacion_M","Tipo_Culti","Limite_anu","Compromiso", "Codigo_Pro","Municipio","Codigo_Mun","Masa", "COORX", "COORY","Subrogado1","Subrogado2","Observacio") # lista de nombres
+    parcelas1 <- parcelas1[,!(names(parcelas1) %in% quitacampos)] #quita columnas de quitacampos
+    parcelas1 <- rmapshaper::ms_simplify(parcelas1) 
+# Esto es necesario para que pinte los poligonos
+    parcelas1 <- spTransform(parcelas1, CRS("+proj=longlat +datum=WGS84"))
+
+## Crea capa de puntos en centroide de parcela para etiquetas
+#    parcelas1_pts <- SpatialPointsDataFrame(coordinates(parcelas1), 
+#                                      data = parcelas1@data, 
+#                                      proj4string = CRS(proj4string(parcelas1)))
+
+# Creamos una paleta de colores a partir de un factor de nombre de toma
+    tomas@data$NAME<-as.factor(tomas@data$NAME) # convierte a factor
+    factpal <- colorFactor(rainbow(122), tomas@data$NAME) # crea paleta colores
+
+# Creamos un vector con etiquetas para los polígonos.
+# son texto HTML que hacemos con la funcion srpinf
+    labels <- sprintf(
+        "<strong>%s</strong><br/>Toma:%s <br/>Vol:%s m<sup>3</sup>",
+        parcelas1@data$Titular, # titular
+        parcelas1@data$Toma, # numero de toma
+        format(parcelas1@data$Volumen_m3,scientific = FALSE,big.mark=" ") # vol de la concesion con formato
+        ) %>% lapply(htmltools::HTML)
+
+rm(rutamap,quitacampos)
+rr<-"<strong>AcuaMed</strong>"
+ library(htmltools)
+
+rr<-HTML('<a href="https://http://www.acuamed.es/"> <img border="0" alt="acuaMed" src="logo.png" width="96" height="40"> </a>')
+ 
+#############################################
+# Crea el mapa de leaflet
+    leaflet() %>%
+    # añade fondos al mapa ver posibles en names(providers)
+            #addTiles(group = "Base")  %>% 
+            addControl(html=rr, position = "topright") %>%
+            addProviderTiles(providers$Stamen.TonerLite,group = "Toner") %>% 
+            addProviderTiles(providers$Stamen.Terrain,group = "Terreno") %>%
+    # Añadimos un botón de fullsize de ventana de mapa
+        addFullscreenControl()	%>%        
+    # Añadimos ventana de medición  
+        addMeasure(
+            position = "bottomleft",
+            primaryLengthUnit = "meters",
+            primaryAreaUnit = "sqmeters",
+            activeColor = "#3D535D",
+            completedColor = "#7D4479") %>%
+     # Añadims polígonos de las parcelas  y marcas
+        addPolygons(data = parcelas1, stroke = FALSE,group = "Parcelas",
+            smoothFactor = 0.5,color = ~factpal(parcelas1@data$Toma),
+            highlight = highlightOptions(
+                weight = 5,
+                color = "#666",
+                dashArray = "",
+                fillOpacity = 0.8,
+                bringToFront = TRUE) ,
+            label = labels ,
+            labelOptions = labelOptions(
+                style = list("font-weight" = "normal", padding = "3px 8px"),
+                textsize = "12px",
+                direction = "auto")
+            ) %>%
+    # Añadimos las marcas y etiquetas de las tomas
+        addCircleMarkers(data = tomas,group = "Tomas",radius = 6,
+            color = ~factpal(tomas@data$NAME), stroke = TRUE, fillOpacity = 0.8,
+            label = tomas@data$NAME,
+            labelOptions = labelOptions(noHide = T, textOnly = TRUE)) %>%
+        addResetMapButton() %>% # boton de vuelta al zoom inicial
+        addSearchFeatures(      # boton de busqueda por toma
+            targetGroups ='Tomas', # grupo en el que busca
+            options = searchFeaturesOptions(
+            zoom=15, openPopup = TRUE, firstTipSubmit = TRUE,
+            autoCollapse = TRUE, hideMarkerOnCollapse = TRUE ))   %>% 
+    # Añade un texto para decir que s epuede buscar    
+    # addControl("<P>Puedes buscar las tomas<br/> por su nombre.</P>",position='bottomleft')    %>% 
+    # Añadimos las lineas de la red de tuberías
+        addPolylines(data = red,group = "Red",label = red@data$Name) %>%
+   # Añadimos un control de capas
+  addLayersControl(
+    baseGroups = c("Toner", "Terreno"), # mapas base
+    overlayGroups = c("Tomas", "Red", "Parcelas"), # capas
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+# he sacado informacion de las siguientes webs:
+# https://github.com/bhaskarvk/leaflet.extras/
+# https://blog.exploratory.io/creating-geojson-out-of-shapefile-in-r-40bc0005857d
+# https://rstudio.github.io/leaflet/basemaps.html
+# https://blog.exploratory.io/creating-geojson-out-of-shapefile-in-r-40bc0005857d 
+# https://stackoverflow.com/questions/45538831/creating-a-leaflet-map-with-custom-labels-in-r    
+# https://gis.stackexchange.com/questions/214062/create-a-shapefile-from-dataframe-in-r-keeping-attribute-table
+# https://stackoverflow.com/questions/45538831/creating-a-leaflet-map-with-custom-labels-in-r
+# https://gist.github.com/jcheng5/c084a59717f18e947a17955007dc5f92
+    
+```
