@@ -285,4 +285,33 @@ tm_shape(land_cover) +
   tm_raster(palette = hcl_cols)
 ```
 
-## U
+## Ejemplos
+```{r}
+      library(sp)
+      library(rgdal)
+      library(maptools)
+      
+      # Bajamos los datos de la web de la chsegura 
+      mapa.rios <- readShapeSpatial("capas/CHS_Red_Hidrografica.shp")
+      plot(mapa.rios)
+      summary(mapa.rios)
+
+tm_shape(mapa.rios) +
+  tm_lines(col="Shape_len",palette="Dark2",lwd =1)+
+  tm_text(text = "NOMBRE", size = 0.4,auto.placement=T)
+
+list.files(pattern="*.shp$", recursive=TRUE, full.names=TRUE) 
+
+library(ggmap)
+murcia <- get_googlemap(center = c(lon = -1.1636353 , lat = 37.9439891), zoom = 10, scale = 2)
+# murcia1 <- get_map(location = "murcia", zoom = 14, source = "osm", color = "bw")
+
+rios.wgs84 <- spTransform(rios, CRS("+proj=longlat +datum=WGS84"))
+rios.wgs84 <- fortify(rios.wgs84)
+
+ggmap(murcia)+
+  geom_polygon(data = capa, aes(long, lat),alpha = .7)
+
+ggmap(murcia)+
+  geom_path(data = rios.wgs84, aes(long, lat, group = group))
+```
