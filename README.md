@@ -244,6 +244,12 @@ x<-1:100
         x2 <- x[i]*2
     }
 ```
+Lectura de datos y hacer un trim al mismo tiempo
+```{r eval=FALSE}
+# leer encabezados y hacer trim a los datos
+# strip.white = quita espacios blancos antes y despues=trim
+  tabla<-read.csv("loans.csv",header = TRUE, strip.white=TRUE)
+```
 ### Limpiar espacios en nombres de ficheros
 El objeto es quitar los espacios y caracteres raros en los nombres de ficheros de un directorio.
 En el ejemplo solo seleccionamos los ficheros de extension *.jpg
