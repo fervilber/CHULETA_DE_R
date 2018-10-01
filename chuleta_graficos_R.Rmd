@@ -37,6 +37,8 @@ Es muy importante saber seleccionar datos de un data frame. Aparte de librerías
     # sumaparcial table suma frecuencias
     table(cars$speed)
     # split selecciona y agrupa subconjuntos
+    
+
     df_split<-split(df,list(df$year,df$type))
     
     # aggregate suma parciales
@@ -518,3 +520,76 @@ Partimos de una dataframe =dtVal, que contiene un campo llamado fecha con la fec
     legend("topleft", pch =20, col=c("grey", "red","blue"),legend=c("acuamulado","produccion","TAM"))
     dev.off()
 ```
+# ggvis
+ggvis es una libreria fantastica para representaciones graficas, mas moderna que ggplot y más adaptable:
+    
+```{r}
+    # Add a layer of points to the graph below.
+pressure %>%
+  ggvis(~temperature, ~pressure, stroke := "skyblue") %>%
+  layer_lines()%>%
+  layer_points()
+# Rewrite the code below so that only the points layer uses the shape property.
+pressure %>%
+  ggvis(~temperature, ~pressure) %>%
+  layer_lines(stroke := "skyblue") %>%
+  layer_points( shape := "triangle-up")
+
+# Refactor the code for the graph below to make it as concise as possible
+pressure %>%
+  ggvis(~temperature, ~pressure,strokeOpacity := 0.5,stroke := "skyblue",strokeWidth := 5) %>%
+  layer_lines() %>%
+  layer_points(fill = ~temperature,
+              shape := "triangle-up",
+              size := 300)
+# Copy and adapt the solution to the first instruction below so that only the lines layer uses a skyblue stroke.
+pressure %>%
+  ggvis(~temperature,~pressure) %>%
+  layer_lines(stroke := "skyblue")%>%
+  layer_points()
+  
+  mtcars %>% ggvis(~mpg, ~wt)
+mtcars %>% ggvis(~mpg, ~wt, fill = ~cyl)
+mtcars %>% ggvis(~mpg, ~wt, fill := "red")
+mtcars %>% ggvis(~mpg)
+```
+## layer_model_predictions
+```{r}
+# Add more layers to the line plot
+pressure %>%
+  ggvis(pressure ~ temperature) %>%
+  layer_lines(opacity := 0.5) %>%
+  layer_points() %>%
+  layer_model_predictions(model = "lm", stroke :="navy") %>%
+  layer_smooths(stroke :="skyblue")
+pressure %>%
+  ggvis(~temperature, ~pressure, stroke := "darkred") %>%
+  layer_lines(stroke := "orange", strokeDash := 5, strokeWidth := 5) %>%
+  layer_points(size := 100, fill := "lightgreen",shape := "circle") %>%
+  layer_smooths()
+  ```
+  
+  ## Ejes y leyendas en ggvis
+  ```{r}
+  # Change the axes of the plot as instructed
+faithful %>% 
+  ggvis(~waiting, ~eruptions) %>% 
+  layer_points() %>% 
+  add_axis("x", 
+         title = "Time since previous eruption (m)", 
+         values = c(seq(50,90,by=10)), 
+         subdivide = 9,
+         orient = "top") %>% 
+  add_axis("y", 
+         title = "Duration of eruption (m)", 
+         values = c(seq(2,5,by=1)), 
+         subdivide = 9,
+         orient = "right")
+         
+   # Add a legend
+faithful %>% 
+  ggvis(~waiting, ~eruptions, opacity := 0.6, 
+        fill = ~factor(round(eruptions))) %>% 
+  layer_points() %>%
+  add_legend("fill", title = "~ duration (m)",orient="left")      
+  ```
