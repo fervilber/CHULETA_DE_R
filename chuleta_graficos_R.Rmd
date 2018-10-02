@@ -524,6 +524,7 @@ Partimos de una dataframe =dtVal, que contiene un campo llamado fecha con la fec
 ggvis es una libreria fantastica para representaciones graficas, mas moderna que ggplot y más adaptable:
     
 ```{r}
+library(ggvis)
     # Add a layer of points to the graph below.
 pressure %>%
   ggvis(~temperature, ~pressure, stroke := "skyblue") %>%
@@ -548,12 +549,17 @@ pressure %>%
   layer_lines(stroke := "skyblue")%>%
   layer_points()
   
-  mtcars %>% ggvis(~mpg, ~wt)
+mtcars %>% ggvis(~mpg, ~wt)
 mtcars %>% ggvis(~mpg, ~wt, fill = ~cyl)
 mtcars %>% ggvis(~mpg, ~wt, fill := "red")
 mtcars %>% ggvis(~mpg)
 ```
+
+![ggvis graficas de lineas](imag/ggvis1.png)
+
+![mtcars %>% ggvis(~mpg, ~wt, fill = ~cyl)](imag/ggvis2.png)
 ## layer_model_predictions
+
 ```{r}
 # Add more layers to the line plot
 pressure %>%
@@ -562,16 +568,17 @@ pressure %>%
   layer_points() %>%
   layer_model_predictions(model = "lm", stroke :="navy") %>%
   layer_smooths(stroke :="skyblue")
-pressure %>%
-  ggvis(~temperature, ~pressure, stroke := "darkred") %>%
+
+pressure %>%  
+  ggvis(temperature ~ pressure, stroke := "darkred") %>%
   layer_lines(stroke := "orange", strokeDash := 5, strokeWidth := 5) %>%
   layer_points(size := 100, fill := "lightgreen",shape := "circle") %>%
   layer_smooths()
-  ```
+```
   
-  ## Ejes y leyendas en ggvis
-  ```{r}
-  # Change the axes of the plot as instructed
+## Ejes y leyendas en ggvis
+```{r}
+# ggvis4
 faithful %>% 
   ggvis(~waiting, ~eruptions) %>% 
   layer_points() %>% 
@@ -586,10 +593,13 @@ faithful %>%
          subdivide = 9,
          orient = "right")
          
-   # Add a legend
+# ggvis 3
 faithful %>% 
   ggvis(~waiting, ~eruptions, opacity := 0.6, 
         fill = ~factor(round(eruptions))) %>% 
   layer_points() %>%
   add_legend("fill", title = "~ duration (m)",orient="left")      
-  ```
+```
+![ggvis graficas de lineas](imag/ggvis4.png)
+
+![ggvis graficas de lineas](imag/ggvis3.png)
