@@ -122,12 +122,14 @@ Donde a4width y a4height son parámetros globales que hemos definido al principi
 plot(1:34)
 ```
 Se muestran fotografías reducidas de tamaño.
-```{r out.width = "30%"}
+```{}
+{r out.width = "30%"}
 knitr::include_graphics("imag/20151118_095058.jpg")
 ```
 Se muestran todas las fotos de una carpeta:
 Insertar todas las imagenes de una carpeta, se usa el ancho para configurar la matriz de imagenespor ejemplo poniendo `out.width="30%"`
-```{r echo = TRUE, out.width="30%"}
+```{}
+{r echo = TRUE, out.width="30%"}
 # pintamos todas las imagenes
 library(knitr)
 myimages<-list.files("imag/", pattern = ".jpg", full.names = TRUE)
